@@ -57,8 +57,14 @@ export TORCH_HOME="${SCRATCH}/.cache/torch"
 mkdir -p "${TOTALSEG_WEIGHTS_PATH}" "${TORCH_HOME}"
 
 # 4. Resolve Input Scan (default to subject-0960 or user passed argument)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INPUT_SCAN="${1:-${SCRIPT_DIR}/../mri-visualizer/public/scans/subject-0960-t1w.dcm}"
+# In Slurm, $SLURM_SUBMIT_DIR points to the directory from which sbatch was invoked
+if [ -n "${SLURM_SUBMIT_DIR:-}" ]; then
+  SCRIPT_DIR="${SLURM_SUBMIT_DIR}"
+else
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+fi
+REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+INPUT_SCAN="${1:-${REPO_DIR}/mri-visualizer/public/scans/subject-0960-t1w.dcm}"
 
 if [ ! -f "${INPUT_SCAN}" ]; then
   echo "[-] Input scan not found at: ${INPUT_SCAN}"

@@ -243,12 +243,27 @@ export default function BrainViewer() {
     }
   };
 
-  const changeMode = (nextMode: "multiplanar" | "render") => {
+  const changeMode = useCallback((nextMode: "multiplanar" | "render") => {
     const viewer = viewerRef.current;
     if (!viewer) return;
     viewer.setSliceType(nextMode === "multiplanar" ? viewer.sliceTypeMultiplanar : viewer.sliceTypeRender);
     setMode(nextMode);
-  };
+  }, []);
+
+  const handleToggleGesture = useCallback(() => {
+    setIsGestureActive((prev) => {
+      const next = !prev;
+      if (next) {
+        if (mode !== "render") {
+          changeMode("render");
+        }
+        if (!areStructuresLoaded && !isLoadingStructures && structures.length > 0 && !isLoaded) {
+          void loadStructures();
+        }
+      }
+      return next;
+    });
+  }, [areStructuresLoaded, changeMode, isLoaded, isLoadingStructures, loadStructures, mode, structures.length]);
 
   return (
     <main className="viewer-shell">
@@ -394,7 +409,7 @@ export default function BrainViewer() {
             <div className="toolbar-right">
               <button
                 className={`gesture-toggle-btn ${isGestureActive ? "active" : ""}`}
-                onClick={() => setIsGestureActive((prev) => !prev)}
+                onClick={handleToggleGesture}
                 title="Toggle Iron Man Holographic Gesture Control"
                 aria-pressed={isGestureActive}
               >

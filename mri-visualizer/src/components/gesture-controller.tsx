@@ -60,11 +60,18 @@ function getDist(p1: Point3D, p2: Point3D): number {
 function isFist(landmarks: Point3D[]): boolean {
   const wrist = landmarks[0];
   const tips = [landmarks[8], landmarks[12], landmarks[16], landmarks[20]];
+  const pips = [landmarks[6], landmarks[10], landmarks[14], landmarks[18]];
   const mcps = [landmarks[5], landmarks[9], landmarks[13], landmarks[17]];
 
   let foldedCount = 0;
   for (let i = 0; i < 4; i++) {
-    if (getDist(tips[i], wrist) < getDist(mcps[i], wrist) * 1.25) {
+    const tipWrist = getDist(tips[i], wrist);
+    const pipWrist = getDist(pips[i], wrist);
+    const tipMcp = getDist(tips[i], mcps[i]);
+    const pipMcp = getDist(pips[i], mcps[i]);
+
+    // Finger is curled when tip is folded back towards palm (closer to wrist than PIP, or curled near MCP)
+    if (tipWrist < pipWrist * 1.05 || tipMcp < pipMcp * 0.95) {
       foldedCount++;
     }
   }
@@ -75,14 +82,21 @@ function isFist(landmarks: Point3D[]): boolean {
 function isPointing(landmarks: Point3D[]): boolean {
   const wrist = landmarks[0];
   const indexTip = landmarks[8];
+  const indexPip = landmarks[6];
   const indexMcp = landmarks[5];
-  const indexExtended = getDist(indexTip, wrist) > getDist(indexMcp, wrist) * 1.2;
+  const indexExtended =
+    getDist(indexTip, wrist) > getDist(indexPip, wrist) * 1.15 &&
+    getDist(indexTip, indexMcp) > getDist(indexPip, indexMcp) * 1.1;
 
   const otherTips = [landmarks[12], landmarks[16], landmarks[20]];
+  const otherPips = [landmarks[10], landmarks[14], landmarks[18]];
   const otherMcps = [landmarks[9], landmarks[13], landmarks[17]];
   let othersCurled = 0;
   for (let i = 0; i < 3; i++) {
-    if (getDist(otherTips[i], wrist) < getDist(otherMcps[i], wrist) * 1.25) {
+    if (
+      getDist(otherTips[i], wrist) < getDist(otherPips[i], wrist) * 1.05 ||
+      getDist(otherTips[i], otherMcps[i]) < getDist(otherPips[i], otherMcps[i]) * 0.95
+    ) {
       othersCurled++;
     }
   }
@@ -287,7 +301,7 @@ export default function GestureController({
 
       const currentMode = modeRef.current;
 
-      // Scenario A: TWO HANDS -> Holographic Disassembly / Explode 16 Brain Structures
+      // Scenario A: TWO HANDS -> Disassembly if structures exist, or Volume Zoom
       if (landmarksList.length >= 2) {
         const h1 = landmarksList[0][0]; // wrist 1
         const h2 = landmarksList[1][0]; // wrist 2
@@ -296,17 +310,25 @@ export default function GestureController({
         if (prevTwoHandDistRef.current !== null) {
           const delta = currentTwoHandDist - prevTwoHandDistRef.current;
           if (Math.abs(delta) > 0.0015) {
-            // Pulling two hands apart expands/explodes the 16 brain structures outward!
-            const nextExplosion = Math.max(0, Math.min(80, explosionRef.current + delta * 200));
-            updatePullOutDisplay(nextExplosion);
-            if (Math.abs(nextExplosion - lastReportedExplosionRef.current) >= 0.2) {
-              lastReportedExplosionRef.current = nextExplosion;
-              onExplosionChangeRef.current?.(Number(nextExplosion.toFixed(1)));
+            if (viewer.meshes && viewer.meshes.length > 0) {
+              // Pulling two hands apart expands/explodes the 16 brain structures outward!
+              const nextExplosion = Math.max(0, Math.min(80, explosionRef.current + delta * 200));
+              updatePullOutDisplay(nextExplosion);
+              if (Math.abs(nextExplosion - lastReportedExplosionRef.current) >= 0.2) {
+                lastReportedExplosionRef.current = nextExplosion;
+                onExplosionChangeRef.current?.(Number(nextExplosion.toFixed(1)));
+              }
+              updateGestureDisplay("HOLO DISASSEMBLY");
+            } else {
+              // Zoom volume view with two hands when meshes are not mounted
+              const nextScale = Math.max(0.4, Math.min(4.0, currentScaleRef.current * (1 + delta * 2.5)));
+              currentScaleRef.current = nextScale;
+              viewer.setScale(nextScale);
+              updateGestureDisplay("TWO-HAND ZOOM");
             }
           }
         }
         prevTwoHandDistRef.current = currentTwoHandDist;
-        updateGestureDisplay("HOLO DISASSEMBLY");
         return;
       }
 
@@ -352,22 +374,20 @@ export default function GestureController({
             prevHandPosRef.current = { ...smoothedPosRef.current };
             updateGestureDisplay("PINCH & PULL");
           } else {
-            // General pinch to zoom view
-            if (prevPinchDistRef.current !== null) {
-              const deltaPinch = pinchDist - prevPinchDistRef.current;
-              if (Math.abs(deltaPinch) > 0.0015) {
-                const nextScale = Math.max(0.4, Math.min(4.0, currentScaleRef.current * (1 + deltaPinch * 5.5)));
+            // General pinch to zoom: move pinched hand UP to zoom in, DOWN to zoom out
+            if (prevHandPosRef.current) {
+              const dy = smoothedPosRef.current.y - prevHandPosRef.current.y;
+              if (Math.abs(dy) > 0.0015) {
+                const nextScale = Math.max(0.4, Math.min(4.0, currentScaleRef.current * (1 - dy * 3.5)));
                 currentScaleRef.current = nextScale;
                 viewer.setScale(nextScale);
               }
             }
-            prevPinchDistRef.current = pinchDist;
+            prevHandPosRef.current = { ...smoothedPosRef.current };
             updateGestureDisplay("PINCH ZOOM");
-            prevHandPosRef.current = null;
           }
         } else if (fistDetected) {
           // Closed fist drag -> 3D Volume Orbit (Azimuth & Elevation)
-          prevPinchDistRef.current = null;
           updateGestureDisplay("FIST ORBIT");
 
           if (prevHandPosRef.current) {
@@ -378,7 +398,7 @@ export default function GestureController({
               const curAzimuth = viewer.scene.renderAzimuth ?? 0;
               const curElevation = viewer.scene.renderElevation ?? 0;
 
-              const nextAzimuth = Math.round((curAzimuth + dx * 380) % 360);
+              const nextAzimuth = Math.round((curAzimuth + dx * 380 + 3600) % 360);
               const nextElevation = Math.max(-85, Math.min(85, Math.round(curElevation - dy * 300)));
 
               viewer.setRenderAzimuthElevation(nextAzimuth, nextElevation);
@@ -389,13 +409,10 @@ export default function GestureController({
         } else {
           // Open palm / neutral hover
           prevHandPosRef.current = null;
-          prevPinchDistRef.current = null;
           updateGestureDisplay("PALM HOVER");
         }
       } else {
         // MULTIPLANAR LINKED SLICES MODE
-        prevPinchDistRef.current = null;
-
         if (pointingDetected) {
           // Pointing index finger sweeps the slice crosshairs
           updateGestureDisplay("POINT SLICE");
@@ -405,14 +422,37 @@ export default function GestureController({
           // Map hand coordinate to crosshairs [x, y, z]
           const curPos = viewer.scene.crosshairPos;
           if (curPos) {
-            const nextZ = curPos[2] ?? 0.5;
-            viewer.scene.crosshairPos = [indexNormX, 1 - indexNormY, nextZ];
+            viewer.scene.crosshairPos = [indexNormX, 1 - indexNormY, curPos[2] ?? 0.5];
             viewer.drawScene();
+            if (typeof viewer.createOnLocationChange === "function") {
+              viewer.createOnLocationChange();
+            }
           }
+          prevHandPosRef.current = null;
+        } else if (fistDetected) {
+          // Fist drag scrolls the slice in 2D
+          updateGestureDisplay("SLICE SCROLL");
+          if (prevHandPosRef.current) {
+            const dy = smoothedPosRef.current.y - prevHandPosRef.current.y;
+            if (Math.abs(dy) > 0.0015) {
+              const curPos = viewer.scene.crosshairPos;
+              if (curPos) {
+                const nextZ = Math.max(0.02, Math.min(0.98, (curPos[2] ?? 0.5) - dy * 2.0));
+                viewer.scene.crosshairPos = [curPos[0], curPos[1], nextZ];
+                viewer.drawScene();
+                if (typeof viewer.createOnLocationChange === "function") {
+                  viewer.createOnLocationChange();
+                }
+              }
+            }
+          }
+          prevHandPosRef.current = { ...smoothedPosRef.current };
         } else if (isPinched) {
           updateGestureDisplay("PINCH ACTIVE");
+          prevHandPosRef.current = null;
         } else {
           updateGestureDisplay("HOVER READY");
+          prevHandPosRef.current = null;
         }
       }
     },
