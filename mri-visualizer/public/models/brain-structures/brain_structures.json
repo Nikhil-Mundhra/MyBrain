@@ -1,0 +1,274 @@
+[
+  {
+    "id": "brainstem",
+    "label": "Brainstem",
+    "category": "Autonomic & Motor Core",
+    "color": "#8d70ff",
+    "description": "Connects cerebrum with spinal cord; regulates breathing, cardiac, and sleep cycles.",
+    "meshFile": "/models/brain-structures/brainstem.obj",
+    "centroid": [
+      0,
+      -18,
+      -25
+    ],
+    "volumeMm3": 19704.1,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "thalamus_left",
+    "label": "Left Thalamus",
+    "category": "Sensory Relay Hub",
+    "color": "#28d7ff",
+    "description": "Crucial sensory relay station routing signals to cerebral cortex.",
+    "meshFile": "/models/brain-structures/thalamus_left.obj",
+    "centroid": [
+      -12,
+      -18,
+      6
+    ],
+    "volumeMm3": 8293.8,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "thalamus_right",
+    "label": "Right Thalamus",
+    "category": "Sensory Relay Hub",
+    "color": "#28d7ff",
+    "description": "Right hemisphere counterpart routing sensory information and alertness.",
+    "meshFile": "/models/brain-structures/thalamus_right.obj",
+    "centroid": [
+      12,
+      -18,
+      6
+    ],
+    "volumeMm3": 8293.8,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "hippocampus_left",
+    "label": "Left Hippocampus",
+    "category": "Memory & Navigation",
+    "color": "#bcf34b",
+    "description": "Critical for consolidation of short-term memory to long-term memory.",
+    "meshFile": "/models/brain-structures/hippocampus_left.obj",
+    "centroid": [
+      -25,
+      -22,
+      -12
+    ],
+    "volumeMm3": 4222.3,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "hippocampus_right",
+    "label": "Right Hippocampus",
+    "category": "Memory & Navigation",
+    "color": "#bcf34b",
+    "description": "Right hippocampal formation governing spatial and episodic memory.",
+    "meshFile": "/models/brain-structures/hippocampus_right.obj",
+    "centroid": [
+      25,
+      -22,
+      -12
+    ],
+    "volumeMm3": 4222.3,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "amygdala_left",
+    "label": "Left Amygdala",
+    "category": "Emotion & Valence",
+    "color": "#ff5f8e",
+    "description": "Core limbic structure processing emotional valence and threat responses.",
+    "meshFile": "/models/brain-structures/amygdala_left.obj",
+    "centroid": [
+      -22,
+      -6,
+      -16
+    ],
+    "volumeMm3": 2412.7,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "amygdala_right",
+    "label": "Right Amygdala",
+    "category": "Emotion & Valence",
+    "color": "#ff5f8e",
+    "description": "Right amygdala mediating autonomic fear conditioning and arousal.",
+    "meshFile": "/models/brain-structures/amygdala_right.obj",
+    "centroid": [
+      22,
+      -6,
+      -16
+    ],
+    "volumeMm3": 2412.7,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "caudate_left",
+    "label": "Left Caudate",
+    "category": "Basal Ganglia Motor Loop",
+    "color": "#ffd156",
+    "description": "Striatal structure coordinating goal-directed actions and motor habits.",
+    "meshFile": "/models/brain-structures/caudate_left.obj",
+    "centroid": [
+      -13,
+      10,
+      10
+    ],
+    "volumeMm3": 7238.2,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "caudate_right",
+    "label": "Right Caudate",
+    "category": "Basal Ganglia Motor Loop",
+    "color": "#ffd156",
+    "description": "Regulates motor planning, procedural learning, and cognitive control.",
+    "meshFile": "/models/brain-structures/caudate_right.obj",
+    "centroid": [
+      13,
+      10,
+      10
+    ],
+    "volumeMm3": 7238.2,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "putamen_left",
+    "label": "Left Putamen",
+    "category": "Motor Control & Dopamine",
+    "color": "#00f0ff",
+    "description": "Major component of dorsal striatum orchestrating fine motor movements.",
+    "meshFile": "/models/brain-structures/putamen_left.obj",
+    "centroid": [
+      -25,
+      4,
+      2
+    ],
+    "volumeMm3": 9584.0,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "putamen_right",
+    "label": "Right Putamen",
+    "category": "Motor Control & Dopamine",
+    "color": "#00f0ff",
+    "description": "Directly interfaces motor cortex for limb motor execution.",
+    "meshFile": "/models/brain-structures/putamen_right.obj",
+    "centroid": [
+      25,
+      4,
+      2
+    ],
+    "volumeMm3": 9584.0,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "pallidum_left",
+    "label": "Left Pallidum (GP)",
+    "category": "Motor Inhibition",
+    "color": "#ff9233",
+    "description": "Regulates voluntary movement via tonic GABAergic inhibitory projections.",
+    "meshFile": "/models/brain-structures/pallidum_left.obj",
+    "centroid": [
+      -18,
+      -2,
+      0
+    ],
+    "volumeMm3": 3686.1,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "pallidum_right",
+    "label": "Right Pallidum (GP)",
+    "category": "Motor Inhibition",
+    "color": "#ff9233",
+    "description": "Right basal output nucleus modulating smooth voluntary motor patterns.",
+    "meshFile": "/models/brain-structures/pallidum_right.obj",
+    "centroid": [
+      18,
+      -2,
+      0
+    ],
+    "volumeMm3": 3686.1,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "accumbens_left",
+    "label": "Left Nucleus Accumbens",
+    "category": "Ventral Striatum / Reward",
+    "color": "#39ff14",
+    "description": "Key hub in the mesolimbic dopamine pathway governing motivation.",
+    "meshFile": "/models/brain-structures/accumbens_left.obj",
+    "centroid": [
+      -9,
+      12,
+      -8
+    ],
+    "volumeMm3": 1055.6,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "accumbens_right",
+    "label": "Right Nucleus Accumbens",
+    "category": "Ventral Striatum / Reward",
+    "color": "#39ff14",
+    "description": "Reinforcement learning hub mediating hedonic responses and reward salience.",
+    "meshFile": "/models/brain-structures/accumbens_right.obj",
+    "centroid": [
+      9,
+      12,
+      -8
+    ],
+    "volumeMm3": 1055.6,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "ventricle_lateral_left",
+    "label": "Left Lateral Ventricle",
+    "category": "Ventricular System (CSF)",
+    "color": "#4da2ff",
+    "description": "C-shaped cavity circulating cerebrospinal fluid providing fluid cushion.",
+    "meshFile": "/models/brain-structures/ventricle_lateral_left.obj",
+    "centroid": [
+      -12,
+      -10,
+      16
+    ],
+    "volumeMm3": 14074.3,
+    "vertexCount": 270,
+    "faceCount": 504
+  },
+  {
+    "id": "ventricle_lateral_right",
+    "label": "Right Lateral Ventricle",
+    "category": "Ventricular System (CSF)",
+    "color": "#4da2ff",
+    "description": "Right cerebral cavity circulating CSF and maintaining intracranial pressure.",
+    "meshFile": "/models/brain-structures/ventricle_lateral_right.obj",
+    "centroid": [
+      12,
+      -10,
+      16
+    ],
+    "volumeMm3": 14074.3,
+    "vertexCount": 270,
+    "faceCount": 504
+  }
+]

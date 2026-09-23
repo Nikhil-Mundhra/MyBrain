@@ -5,3 +5,5 @@ brain-3d-print/subject-0960/
 .vercel
 .env*
 .DS_Store
+hpc-segmentation/TotalSegmentator/
+*.tar.gz

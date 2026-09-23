@@ -44,4 +44,33 @@
 .holo-error{padding:10px;background:rgba(255,95,142,.1);border:1px solid rgba(255,95,142,.3);border-radius:4px;color:var(--pink);font-size:10px;display:flex;flex-direction:column;gap:6px}
 .holo-error small{color:var(--muted)}
 .holo-retry-btn{align-self:flex-start;padding:4px 8px;border:1px solid var(--pink);background:transparent;color:var(--pink);cursor:pointer;font:700 9px var(--display);text-transform:uppercase;border-radius:2px}
+.telemetry-highlight{color:var(--lime) !important;font-weight:700}
+
+/* 16 Brain Structures Control Box */
+.structures-control-box{border:1px solid var(--line);background:rgba(2,10,23,.45);padding:14px;border-radius:4px;display:flex;flex-direction:column;gap:10px}
+.structures-header{display:flex;justify-content:space-between;align-items:center}
+.structures-badge{font:700 8px var(--display);color:var(--lime);background:rgba(188,243,75,.15);border:1px solid rgba(188,243,75,.35);padding:2px 6px;border-radius:2px;letter-spacing:.06em}
+.structures-load-btn{width:100%;padding:10px;border:1px solid rgba(40,215,255,.5);background:rgba(40,215,255,.1);color:var(--cyan);cursor:pointer;font:700 10px var(--display);letter-spacing:.08em;text-transform:uppercase;border-radius:3px;transition:.2s ease}
+.structures-load-btn:hover:not(:disabled){background:rgba(40,215,255,.2);box-shadow:0 0 14px rgba(40,215,255,.3)}
+.structures-load-btn:disabled{opacity:.5;cursor:not-allowed}
+.disassembly-section{display:flex;flex-direction:column;gap:8px}
+.slider-row{display:flex;justify-content:space-between;align-items:center;font:700 9px var(--display);color:var(--muted)}
+.slider-row b{color:var(--cyan);font-weight:700}
+.explosion-slider{width:100%;accent-color:var(--cyan);cursor:pointer}
+.disassembly-actions{display:flex;gap:6px}
+.action-pill{flex:1;padding:5px;background:rgba(40,215,255,.06);border:1px solid rgba(40,215,255,.25);color:var(--ink);font:700 8.5px var(--display);text-transform:uppercase;border-radius:2px;cursor:pointer;transition:.15s ease}
+.action-pill:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(40,215,255,.15)}
+.structures-scroll-list{max-height:165px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:2px}
+.structures-scroll-list::-webkit-scrollbar{width:4px}
+.structures-scroll-list::-webkit-scrollbar-thumb{background:rgba(40,215,255,.2);border-radius:2px}
+.structure-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid transparent;background:rgba(2,8,18,.5);border-radius:3px;cursor:pointer;transition:.15s ease}
+.structure-row:hover{border-color:rgba(40,215,255,.3);background:rgba(40,215,255,.05)}
+.structure-row.selected{border-color:var(--lime);background:rgba(188,243,75,.1)}
+.row-swatch{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+.row-meta{display:flex;flex-direction:column;flex:1;min-width:0}
+.row-label{font:700 9px var(--display);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-category{font:400 7.5px Arial,sans-serif;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-state{font:700 7.5px var(--display);color:var(--muted);letter-spacing:.05em}
+.structure-row.selected .row-state{color:var(--lime);font-weight:700}
+
 
