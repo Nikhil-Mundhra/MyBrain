@@ -56,6 +56,9 @@ export TOTALSEG_WEIGHTS_PATH="${SCRATCH}/.totalsegmentator/nnunet/results/nnUNet
 export TORCH_HOME="${SCRATCH}/.cache/torch"
 mkdir -p "${TOTALSEG_WEIGHTS_PATH}" "${TORCH_HOME}"
 
+# Set academic license (using -sv to skip re-validation on compute nodes)
+totalseg_set_license -l aca_1ESXEYFSEVVS2S -sv 2>/dev/null || true
+
 # 4. Resolve Input Scan (default to subject-0960 or user passed argument)
 # In Slurm, $SLURM_SUBMIT_DIR points to the directory from which sbatch was invoked
 if [ -n "${SLURM_SUBMIT_DIR:-}" ]; then
