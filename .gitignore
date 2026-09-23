@@ -1,1 +1,6 @@
 .migrations/
+
+# Local MRI source data and derived 3D-print artifacts (may contain sensitive health data).
+brain-3d-print/subject-0960/
+.vercel
+.env*
