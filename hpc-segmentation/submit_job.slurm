@@ -85,21 +85,46 @@ mkdir -p "${MASKS_DIR}" "${MESHES_DIR}"
 PREPARED_SCAN="${INPUT_SCAN}"
 if [[ "${INPUT_SCAN}" == *.dcm ]]; then
   echo "==> Converting single enhanced DICOM to NIfTI..."
-  python3 -c "
+  if command -v dcm2niix &>/dev/null; then
+    echo "    Using dcm2niix for true anatomical orientation and scanner affine..."
+    dcm2niix -b y -z y -o "${JOB_SCRATCH}" -f "input_converted" "${INPUT_SCAN}"
+    CONVERTED_FILE=$(find "${JOB_SCRATCH}" -name "input_converted*.nii.gz" | head -n 1)
+    if [ -n "${CONVERTED_FILE}" ] && [ -f "${CONVERTED_FILE}" ]; then
+      PREPARED_SCAN="${CONVERTED_FILE}"
+    fi
+  else
+    echo "    dcm2niix not found; converting with pydicom and nibabel keeping header geometry..."
+    python3 -c "
 import nibabel as nib
 import pydicom
 import numpy as np
 
 dcm = pydicom.dcmread('${INPUT_SCAN}')
 data = dcm.pixel_array
-affine = np.eye(4)
+
+# Determine pixel spacing & slice thickness
+ps = getattr(dcm, 'PixelSpacing', [1.0, 1.0])
+st = getattr(dcm, 'SliceThickness', getattr(dcm, 'SpacingBetweenSlices', 1.0))
+dx, dy = float(ps[0]), float(ps[1])
+dz = float(st)
+
+# Build anatomical affine preserving voxel scale
+affine = np.diag([dx, dy, dz, 1.0])
+
+# Match 3D volume axis ordering
+if data.ndim == 3:
+    # If shape is (slices, rows, cols), transpose to (cols, rows, slices) standard NIfTI orientation
+    if data.shape[0] < data.shape[1] and data.shape[0] < data.shape[2]:
+        data = np.transpose(data, (2, 1, 0))
+
 img = nib.Nifti1Image(data, affine)
 nib.save(img, '${JOB_SCRATCH}/input_converted.nii.gz')
-print('Converted DICOM to ${JOB_SCRATCH}/input_converted.nii.gz')
+print('Converted DICOM to ${JOB_SCRATCH}/input_converted.nii.gz with spacing (${dx}, ${dy}, ${dz})')
 " 2>/dev/null || true
 
-  if [ -f "${JOB_SCRATCH}/input_converted.nii.gz" ]; then
-    PREPARED_SCAN="${JOB_SCRATCH}/input_converted.nii.gz"
+    if [ -f "${JOB_SCRATCH}/input_converted.nii.gz" ]; then
+      PREPARED_SCAN="${JOB_SCRATCH}/input_converted.nii.gz"
+    fi
   fi
 fi
 
@@ -107,17 +132,19 @@ echo "==> Running TotalSegmentator for 16 Brain Structures..."
 echo "    Scan: ${PREPARED_SCAN}"
 echo "    Task: brain_structures"
 
-# Execute TotalSegmentator with GPU acceleration
+# Execute TotalSegmentator with GPU acceleration and threshold retention
 TotalSegmentator \
   -i "${PREPARED_SCAN}" \
   -o "${MASKS_DIR}" \
   --task brain_structures \
-  --device gpu
+  --device gpu \
+  --nr_thr_saving 1
 
 echo "==> Converting 16 binary masks to web-ready 3D OBJ meshes & manifest..."
 python3 "${SCRIPT_DIR}/export_structures.py" \
   -i "${MASKS_DIR}" \
-  -o "${MESHES_DIR}"
+  -o "${MESHES_DIR}" \
+  -p "/models/hpc-output/web_meshes/"
 
 # 6. Bundle results into web archive for local download
 ARCHIVE_NAME="${JOB_SCRATCH}/brain_structures_web.tar.gz"

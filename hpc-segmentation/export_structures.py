@@ -140,7 +140,7 @@ def export_mesh_obj(verts, faces, obj_path):
         for face in faces:
             f.write(f"f {face[0]+1} {face[1]+1} {face[2]+1}\n")
 
-def process_masks(input_dir, output_dir):
+def process_masks(input_dir, output_dir, web_prefix="/models/brain-structures/"):
     try:
         import nibabel as nib
         import numpy as np
@@ -212,7 +212,7 @@ def process_masks(input_dir, output_dir):
                 "category": meta["category"],
                 "color": meta["color"],
                 "description": meta["description"],
-                "meshFile": f"/models/brain-structures/{obj_filename}",
+                "meshFile": f"{web_prefix.rstrip('/')}/{obj_filename}",
                 "centroid": [round(c, 2) for c in centroid],
                 "volumeMm3": round(volume_mm3, 1),
                 "vertexCount": len(physical_verts),
@@ -234,9 +234,10 @@ def main():
     parser = argparse.ArgumentParser(description="Export 3D meshes for TotalSegmentator brain structures")
     parser.add_argument("-i", "--input-dir", required=True, help="Directory containing TotalSegmentator output NIfTI masks")
     parser.add_argument("-o", "--output-dir", required=True, help="Directory to save .obj meshes and manifest JSON")
+    parser.add_argument("-p", "--web-prefix", default="/models/brain-structures/", help="Web URL prefix for mesh files in manifest (e.g., /models/brain-structures/ or /models/hpc-output/web_meshes/)")
     args = parser.parse_args()
 
-    process_masks(args.input_dir, args.output_dir)
+    process_masks(args.input_dir, args.output_dir, web_prefix=args.web_prefix)
 
 if __name__ == "__main__":
     main()

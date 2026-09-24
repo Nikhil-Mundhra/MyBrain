@@ -47,7 +47,8 @@ echo "==> Installing PyTorch with CUDA acceleration..."
 pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cu118
 
 # 4. Install imaging and mesh generation libraries for 3D web export
-echo "==> Installing nibabel, pydicom, scikit-image, trimesh, and scipy..."
+echo "==> Installing dcm2niix, nibabel, pydicom, scikit-image, trimesh, and scipy..."
+conda install -y -c conda-forge dcm2niix 2>/dev/null || true
 pip install --no-cache-dir nibabel pydicom scikit-image trimesh scipy
 
 # 5. Install TotalSegmentator (from local repo or PyPI)
