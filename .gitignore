@@ -10,3 +10,10 @@ hpc-segmentation/TotalSegmentator/
 *.nii
 *.nii.gz
 mri-visualizer/public/models/hpc-output/masks_16structures/
+
+# Large 3D print outputs and mesh files
+brain-cortical_*.bgcode
+brain-3d-print/static/*.png
+mri-visualizer/public/models/hpc-output/web_meshes/*.obj
+mri-visualizer/public/models/hpc-output/web_meshes/brain_structures.json
+local_run/input_converted.json
