@@ -141,7 +141,7 @@ TotalSegmentator \
   --nr_thr_saving 1
 
 echo "==> Converting 16 binary masks to web-ready 3D OBJ meshes & manifest..."
-python3 "${SCRIPT_DIR}/export_structures.py" \
+python "${SCRIPT_DIR}/export_structures.py" \
   -i "${MASKS_DIR}" \
   -o "${MESHES_DIR}" \
   -p "/models/hpc-output/web_meshes/"
