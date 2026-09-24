@@ -12,8 +12,16 @@ export interface BrainStructure {
   meshFile: string;
   centroid: [number, number, number];
   volumeMm3: number;
+  volumeCm3?: number;
+  lhVolumeMm3?: number;
+  rhVolumeMm3?: number;
+  asymmetryIndexPct?: number;
+  connectedComponentsInit?: number;
+  connectedComponentsKept?: number;
   vertexCount: number;
   faceCount: number;
+  isWatertight?: boolean;
+  eulerCharacteristic?: number;
 }
 
 interface GestureControllerProps {
@@ -609,12 +617,12 @@ export default function GestureController({
   return (
     <aside
       className={`holo-hud-panel ${isMinimized ? "minimized" : ""}`}
-      aria-label="Iron Man Holographic Gesture Telemetry HUD"
+      aria-label="Spatial Gesture Telemetry Controller"
     >
       <header className="holo-hud-header">
         <div className="holo-title">
-          <span className="holo-pulse-dot" />
-          <span>HOLO-GESTURE HUD</span>
+          <span className="indicator-pulse-dot" />
+          <span>SPATIAL GESTURE</span>
         </div>
         <div className="holo-hud-controls">
           <button

@@ -6,26 +6,26 @@ const mockStructures = [
   {
     id: "thalamus_left",
     label: "Left Thalamus",
-    category: "Subcortical",
+    category: "Sensory Relay Hub",
     color: "#28d7ff",
-    description: "Sensory relay station",
+    description: "Crucial sensory relay station routing signals to cerebral cortex.",
     meshFile: "/models/brain-structures/thalamus_left.obj",
-    centroid: [10, -15, 5] as [number, number, number],
-    volumeMm3: 7200,
-    vertexCount: 1500,
-    faceCount: 3000,
+    centroid: [-12, -18, 6] as [number, number, number],
+    volumeMm3: 8293.8,
+    vertexCount: 270,
+    faceCount: 504,
   },
   {
     id: "hippocampus_left",
     label: "Left Hippocampus",
-    category: "Limbic",
+    category: "Memory & Navigation",
     color: "#bcf34b",
-    description: "Memory consolidation",
+    description: "Critical for consolidation of short-term memory to long-term memory.",
     meshFile: "/models/brain-structures/hippocampus_left.obj",
-    centroid: [20, -20, -10] as [number, number, number],
-    volumeMm3: 4100,
-    vertexCount: 1200,
-    faceCount: 2400,
+    centroid: [-25, -22, -12] as [number, number, number],
+    volumeMm3: 4210.5,
+    vertexCount: 270,
+    faceCount: 504,
   },
 ];
 
@@ -46,149 +46,99 @@ describe("BrainViewer Component", () => {
     });
   });
 
-  it("renders header, study metadata, and initial viewer state", async () => {
+  it("renders header, study metadata, and initial spatial stage state", async () => {
     render(<BrainViewer />);
 
-    expect(screen.getByText("NEUROVISUALIZATION STUDIO")).toBeInTheDocument();
+    expect(screen.getByText("SPATIAL NEURO")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Subject 0960");
-    expect(screen.getByText("34 · anat-T1w")).toBeInTheDocument();
-    expect(screen.getByText("Enhanced DICOM")).toBeInTheDocument();
-    expect(screen.getByText("TotalSegmentator")).toBeInTheDocument();
+    expect(screen.getByText("anat-T1w · 34")).toBeInTheDocument();
+    expect(screen.getByText("FreeSurfer Ground Truth")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "Viewer ready · load the structural T1 scan or 16 brain structures."
-      );
+      expect(screen.getAllByText("Left Thalamus")[0]).toBeInTheDocument();
     });
   });
 
-  it("switches display palettes when preset buttons are clicked", async () => {
+  it("switches display colormap presets when palette chips are clicked", async () => {
     render(<BrainViewer />);
 
-    await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "Viewer ready · load the structural T1 scan or 16 brain structures."
-      );
-    });
-
     const thermalButton = screen.getByRole("button", { name: /Thermal/i });
-    const spectrumButton = screen.getByRole("button", { name: /Spectrum/i });
+    const perceptualButton = screen.getByRole("button", { name: /Perceptual/i });
     const anatomyButton = screen.getByRole("button", { name: /Anatomy/i });
 
     expect(anatomyButton).toHaveAttribute("aria-pressed", "true");
 
     fireEvent.click(thermalButton);
-    expect(thermalButton).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("status")).toHaveTextContent("Thermal palette active");
-
-    fireEvent.click(spectrumButton);
-    expect(spectrumButton).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("status")).toHaveTextContent("Spectrum palette active");
-  });
-
-  it("switches between Linked slices and 3D volume modes", async () => {
-    render(<BrainViewer />);
-
     await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "Viewer ready · load the structural T1 scan or 16 brain structures."
-      );
+      expect(thermalButton).toHaveAttribute("aria-pressed", "true");
+      expect(screen.getByText(/Thermal colormap applied/i)).toBeInTheDocument();
     });
 
-    const renderModeBtn = screen.getByRole("button", { name: "3D volume" });
-    const multiplanarModeBtn = screen.getByRole("button", { name: "Linked slices" });
-
-    expect(multiplanarModeBtn).toHaveClass("active");
-
-    fireEvent.click(renderModeBtn);
-    expect(renderModeBtn).toHaveClass("active");
-
-    fireEvent.click(multiplanarModeBtn);
-    expect(multiplanarModeBtn).toHaveClass("active");
+    fireEvent.click(perceptualButton);
+    await waitFor(() => {
+      expect(perceptualButton).toHaveAttribute("aria-pressed", "true");
+      expect(screen.getByText(/Perceptual colormap applied/i)).toBeInTheDocument();
+    });
   });
 
-  it("toggles the holographic gesture HUD", async () => {
+  it("switches between 3D Structures, Glass Cranium, and Linked Slices stage modes", async () => {
     render(<BrainViewer />);
 
-    await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "Viewer ready · load the structural T1 scan or 16 brain structures."
-      );
-    });
+    const structuresTab = screen.getByRole("tab", { name: "3D Structures" });
+    const glassTab = screen.getByRole("tab", { name: "Glass Cranium" });
+    const slicesTab = screen.getByRole("tab", { name: "Linked Slices" });
 
-    const gestureBtn = screen.getByTitle("Toggle Iron Man Holographic Gesture Control");
-    expect(gestureBtn).toHaveTextContent("Holo-Gesture [OFF]");
+    expect(structuresTab).toHaveClass("active");
+
+    fireEvent.click(glassTab);
+    expect(glassTab).toHaveClass("active");
+
+    fireEvent.click(slicesTab);
+    expect(slicesTab).toHaveClass("active");
+  });
+
+  it("toggles the spatial gesture HUD", async () => {
+    render(<BrainViewer />);
+
+    const gestureBtn = screen.getByTitle("Toggle Spatial Gesture Camera HUD");
+    expect(gestureBtn).toHaveTextContent("Enable Gesture HUD");
     expect(gestureBtn).toHaveAttribute("aria-pressed", "false");
 
     fireEvent.click(gestureBtn);
-    expect(gestureBtn).toHaveTextContent("Holo-Gesture [ON]");
+    expect(gestureBtn).toHaveTextContent("Gesture Tracking Active");
     expect(gestureBtn).toHaveAttribute("aria-pressed", "true");
 
     // Click again to turn off
     fireEvent.click(gestureBtn);
-    expect(gestureBtn).toHaveTextContent("Holo-Gesture [OFF]");
+    expect(gestureBtn).toHaveTextContent("Enable Gesture HUD");
     expect(gestureBtn).toHaveAttribute("aria-pressed", "false");
   });
 
-  it("loads 16 brain structures and controls disassembly/explosion", async () => {
+  it("inspects brain structures and controls disassembly/explosion", async () => {
     render(<BrainViewer />);
 
     await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "Viewer ready · load the structural T1 scan or 16 brain structures."
-      );
-      expect(screen.getByRole("button", { name: "Load 16 Structures" })).toBeEnabled();
+      expect(screen.getAllByText("Left Thalamus")[0]).toBeInTheDocument();
+      expect(screen.getAllByText("Left Hippocampus")[0]).toBeInTheDocument();
     });
 
-    const loadStructuresBtn = screen.getByRole("button", { name: "Load 16 Structures" });
-    fireEvent.click(loadStructuresBtn);
+    // Test structure selection and detail inspection
+    const thalamusItem = screen.getAllByText("Left Thalamus")[0];
+    fireEvent.click(thalamusItem);
 
-    await waitFor(() => {
-      expect(screen.getByText("ONLINE")).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: "Reload 16 Structures" })).toBeInTheDocument();
-    });
+    // Inspector card should be populated
+    expect(screen.getByText("Sensory Relay Hub")).toBeInTheDocument();
+    expect(screen.getByText("8.29 cm³")).toBeInTheDocument();
+    expect(screen.getByText("Crucial sensory relay station routing signals to cerebral cortex.")).toBeInTheDocument();
 
-    // Check disassembly slider and structure rows rendered
-    expect(screen.getByText("PULL OUT")).toBeInTheDocument();
-    expect(screen.getByText("Left Thalamus")).toBeInTheDocument();
-    expect(screen.getByText("Left Hippocampus")).toBeInTheDocument();
-
-    // Test structure selection toggle
-    const thalamusRow = screen.getByText("Left Thalamus").closest(".structure-row");
-    expect(thalamusRow).toBeInTheDocument();
-    if (thalamusRow) {
-      fireEvent.click(thalamusRow);
-      expect(screen.getByText("HELD")).toBeInTheDocument();
-      // Click again to deselect
-      fireEvent.click(thalamusRow);
-      expect(screen.queryByText("HELD")).not.toBeInTheDocument();
-    }
-
-    // Test Explode & Dock All pill buttons
-    const explodeBtn = screen.getByRole("button", { name: "Explode" });
-    const dockAllBtn = screen.getByRole("button", { name: "Dock All" });
+    // Test radial explosion buttons
+    const explodeBtn = screen.getByRole("button", { name: "Explode 45mm" });
+    const dockAllBtn = screen.getByRole("button", { name: "Dock Core" });
 
     fireEvent.click(explodeBtn);
-    expect(screen.getByText("50 mm")).toBeInTheDocument();
+    expect(screen.getByText("45 mm")).toBeInTheDocument();
 
     fireEvent.click(dockAllBtn);
     expect(screen.getByText("0 mm")).toBeInTheDocument();
-  });
-
-  it("renders visual readout analytics cards (Signal profile and Tissue breakdown)", async () => {
-    render(<BrainViewer />);
-
-    await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent(
-        "Viewer ready · load the structural T1 scan or 16 brain structures."
-      );
-    });
-
-    expect(screen.getByText("Signal profile")).toBeInTheDocument();
-    expect(screen.getByText("Tissue mix")).toBeInTheDocument();
-    expect(screen.getByText("CSF")).toBeInTheDocument();
-    expect(screen.getByText("Gray matter")).toBeInTheDocument();
-    expect(screen.getByText("White matter")).toBeInTheDocument();
-    expect(screen.getByText("Color guide")).toBeInTheDocument();
   });
 });

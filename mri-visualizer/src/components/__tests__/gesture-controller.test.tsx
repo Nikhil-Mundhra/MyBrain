@@ -76,7 +76,7 @@ describe("GestureController Component", () => {
       />
     );
 
-    expect(screen.getByText("HOLO-GESTURE HUD")).toBeInTheDocument();
+    expect(screen.getByText("SPATIAL GESTURE")).toBeInTheDocument();
     expect(screen.getByText("GESTURE")).toBeInTheDocument();
     expect(screen.getByText("HANDS")).toBeInTheDocument();
     expect(screen.getByText("TARGET")).toBeInTheDocument();

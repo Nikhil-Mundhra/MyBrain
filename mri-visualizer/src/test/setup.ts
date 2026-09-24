@@ -65,6 +65,16 @@ vi.mock("@niivue/niivue", () => {
     drawScene = vi.fn();
     loadFromFile = vi.fn().mockResolvedValue(undefined);
     loadMeshes = vi.fn().mockResolvedValue(undefined);
+    removeMesh = vi.fn().mockImplementation((mesh: unknown) => {
+      const idx = this.meshes.indexOf(mesh as (typeof this.meshes)[number]);
+      if (idx !== -1) {
+        this.meshes.splice(idx, 1);
+      } else {
+        this.meshes.shift();
+      }
+    });
+    setOpacity = vi.fn();
+    mm2frac = vi.fn().mockReturnValue([0.5, 0.5, 0.5]);
     sliceTypeMultiplanar = 0;
     sliceTypeRender = 4;
     volumes = [{ id: "test-volume" }];
@@ -80,10 +90,18 @@ vi.mock("@niivue/niivue", () => {
       renderElevation: 0,
       crosshairPos: [0.5, 0.5, 0.5],
     };
+    opts = {
+      multiplanarShowRender: 0,
+    };
     gl = {};
   }
 
   return {
     Niivue: MockNiivue,
+    SHOW_RENDER: {
+      NEVER: 0,
+      ALWAYS: 1,
+      AUTO: 2,
+    },
   };
 });

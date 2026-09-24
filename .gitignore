@@ -7,3 +7,6 @@ brain-3d-print/subject-0960/
 .DS_Store
 hpc-segmentation/TotalSegmentator/
 *.tar.gz
+*.nii
+*.nii.gz
+mri-visualizer/public/models/hpc-output/masks_16structures/

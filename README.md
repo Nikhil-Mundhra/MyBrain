@@ -1,10 +1,11 @@
 # MyBrain
 
 <p align="center">
-  <img src="mri-visualizer/public/scans/my-brain-sagittal-mri.png" alt="Sagittal MRI slice of my brain" width="620">
+  <img src="mri-visualizer/public/scans/my-brain-sagittal-mri.png" alt="Sagittal MRI slice of my brain" width="48%">
+  <img src="brain-3d-print/static/prusa-mk4s-brain.png" alt="3D brain print model on Prusa MK4S build plate" width="48%">
 </p>
 
-<p align="center"><em>My brain — sagittal T1-weighted MRI</em></p>
+<p align="center"><em>My brain — sagittal T1-weighted MRI (left) &bull; 3D print preparation on Prusa MK4S (right)</em></p>
 
 This monorepo keeps the two workflows for this project together while allowing
 each to remain independent:

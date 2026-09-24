@@ -205,6 +205,8 @@ Now, as a final step: Export the mesh again, but this time use ``Binary encoding
 
 So, now to the final steps. If you're lucky enough and you have you have your own access to a 3D printer, than you probably know what to do next. Lucky you!
 
+<img src="static/prusa-mk4s-brain.png" width="450" alt="3D model prepared on Prusa MK4S build plate">
+
 If you don't have access to a 3D printer, than there are many options on the internet. I personally used [www.shapeways.com](https://www.shapeways.com). It's very easy to use, you can choose from many different materials and it gives you also the option to resize your model, as well as correct for flawed surface areas.
 
 
